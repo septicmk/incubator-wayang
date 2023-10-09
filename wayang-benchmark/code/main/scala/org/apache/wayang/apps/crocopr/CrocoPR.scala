@@ -95,8 +95,10 @@ class CrocoPR(plugins: Plugin*) {
     * @return [[DataQuanta]] representing the parsed file
     */
   def readLinks(inputUrl: String)(implicit planBuilder: PlanBuilder): DataQuanta[(String, String)] = {
+    //val linkPattern =
+    //  """<http://dbpedia.org/resource/([^>]+)>\s+<http://dbpedia.org/ontology/wikiPageWikiLink>\s+<http://dbpedia.org/resource/([^>]+)>\s+\.""".r
     val linkPattern =
-      """<http://dbpedia.org/resource/([^>]+)>\s+<http://dbpedia.org/ontology/wikiPageWikiLink>\s+<http://dbpedia.org/resource/([^>]+)>\s+\.""".r
+      """([0-9]+)\s+([0-9]+)""".r
 
     planBuilder
       .readTextFile(inputUrl).withName(s"Load $inputUrl")
@@ -122,6 +124,7 @@ object CrocoPR extends ExperimentDescriptor {
       sys.error(s"Usage: <main class> ${Parameters.experimentHelp} <plugin>(,<plugin>)* <input URL1> <input URL2> <#iterations>")
       sys.exit(1)
     }
+
     implicit val configuration = new Configuration
     implicit val experiment = Parameters.createExperiment(args(0), this)
     val plugins = Parameters.loadPlugins(args(1))
